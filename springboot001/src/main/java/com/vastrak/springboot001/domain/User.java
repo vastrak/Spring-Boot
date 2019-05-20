@@ -21,7 +21,7 @@ public class User implements Serializable {
 	private String name;
 	private String email;
 	@OneToMany(mappedBy = "user", cascade = { javax.persistence.CascadeType.ALL }, orphanRemoval = true)
-	private List<Article> articles = new ArrayList();
+	private List<Article> articles = new ArrayList<>();
 
 	public User() {
 	}
