@@ -48,4 +48,12 @@ public class ArticleDto implements Serializable {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
+	@Override
+	public String toString() {
+		return "ArticleDto [article_id=" + article_id + ", title=" + title + ", body=" + body + ", userName=" + userName
+				+ "]";
+	}
+	
+	
 }

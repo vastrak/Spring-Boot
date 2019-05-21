@@ -6,6 +6,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 /**
  * 
  * @author Christian
@@ -19,7 +22,8 @@ public class Article
   private Long article_id;
   private String title;
   private String body;
-  @ManyToOne(fetch=javax.persistence.FetchType.LAZY)
+  @ManyToOne(fetch=javax.persistence.FetchType.LAZY) // cambiado desde lazy
+  //@NotFound(action = NotFoundAction.IGNORE)
   @JoinColumn(name="user_id")
   private User user;
   

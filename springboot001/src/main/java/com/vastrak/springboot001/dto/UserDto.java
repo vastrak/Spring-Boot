@@ -46,4 +46,12 @@ public class UserDto {
 	public void setArticles(Integer articles) {
 		this.articles = articles;
 	}
+
+	@Override
+	public String toString() {
+		return "UserDto [userDto_id=" + userDto_id + ", name=" + name + ", email=" + email + ", articles=" + articles
+				+ "]";
+	}
+	
+	
 }

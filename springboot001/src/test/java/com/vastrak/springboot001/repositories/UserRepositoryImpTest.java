@@ -157,4 +157,5 @@ public class UserRepositoryImpTest {
 
 		userRepository.deleteAll();
 	}
+
 }
