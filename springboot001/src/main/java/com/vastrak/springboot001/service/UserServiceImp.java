@@ -38,6 +38,10 @@ public class UserServiceImp implements UserService {
 		return (userfound == null ? null : UserMapper.MAPPER.userToUserDto(userfound));
 	}
 
+	/**
+	 * Returns an empty list if there are no users in the repository.
+	 * @return empty Lit<UserDto>
+	 */
 	@Override
 	public List<UserDto> getUsers() {
 
