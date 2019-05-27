@@ -8,5 +8,8 @@ public interface ErrorMessages {
 	public static final String USERDTO_ID_MUST_BE_NULL = "The userDto_id field must be null for new users";
 	public static final String USERDTO_FIELD_WRONG_FORMAT = "The name or/and email fields are badly formatted, empty or null";
 	public static final String USERDTO_FIELD_ERROR = "UserDto field error";
-	
+	//
+	public static final String USERDTO_ID_MUST_NOT_BE_NULL = "The userDto_id field must not be null for update users";
+	public static final String USERDTO_ID_DOES_NOT_EXIST = "The userDto_id does not belong to any user";
+	public static final String USERDTO_NON_EXIST = "UserDto non exist error";
 }

@@ -43,7 +43,7 @@ public class UserDtoValidator {
 
 	
 	/**
-	 * Validate a RRDD for a new user.
+	 * Validate an UserDto for a new user.
 	 * @param userDto with userDto_id field == null;
 	 * @return List<String> errors list
 	 */
@@ -59,5 +59,21 @@ public class UserDtoValidator {
 		return errors;
 	}
 	
+	/**
+	 * Validate an UserDto for a update user. (formated fields only)
+	 * @param userDto with userDto_id field != null
+	 * @return List<String> errros list o an empty list.
+	 */
+	public static List<String> validateUpdateUser(UserDto userDto) {
+
+		List<String> errors = new ArrayList<>();
+		if(userDto.getUserDto_id() == null) {  // update users require id field not null
+			errors.add(ErrorMessages.USERDTO_ID_MUST_NOT_BE_NULL);
+		}
+		if(!validNameAndEmail(userDto)) {
+			errors.add(ErrorMessages.USERDTO_FIELD_WRONG_FORMAT);
+		}
+		return errors;		
+	}
 
 }

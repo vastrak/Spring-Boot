@@ -6,6 +6,8 @@ import static org.mockito.Mockito.any;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -155,7 +157,7 @@ public class UserControllerTest {
 		// por las dudas!
 		when(userService.createUpdateUser(userDto)).thenReturn(1L);
 
-		this.userController.perform(post("/users/add/").content(asJsonString(userDto))
+		this.userController.perform(post("/users/").content(asJsonString(userDto))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
@@ -175,7 +177,7 @@ public class UserControllerTest {
 		
 		when(userService.createUpdateUser(userDto)).thenReturn(1L);
 		
-		this.userController.perform(post("/users/add/").content(asJsonString(userDto))
+		this.userController.perform(post("/users/").content(asJsonString(userDto))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
@@ -184,10 +186,6 @@ public class UserControllerTest {
 		
 	}
 	
-	/**
- 	 *
-	 * @throws Exception
-	 */
 	
 	@Test
 	public void test008_createUserOk() throws Exception {
@@ -202,7 +200,7 @@ public class UserControllerTest {
 		// de lo contrario el mock retorna 0
 		when(userService.createUpdateUser(any(UserDto.class))).thenReturn(3L);
 		
-		this.userController.perform(post("/users/add/").content(asJsonString(userDto))
+		this.userController.perform(post("/users/").content(asJsonString(userDto))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.totalRecords", is(1)))
@@ -213,6 +211,86 @@ public class UserControllerTest {
 	}
 	
 	
+	@Test
+	public void test009_updateUserIdMustBeExist() throws Exception {
+		
+		UserDto userDto = new UserDto();
+		userDto.setUserDto_id(1L);
+		userDto.setName("Luis");  
+		userDto.setEmail("luis@notengoemail.com");
+		userDto.setArticles(0);
+		
+		// el usuario no existe!
+		when(userService.existUser(userDto.getUserDto_id())).thenReturn(false);
+		
+		this.userController.perform(put("/users/1").content(asJsonString(userDto))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+				.andExpect(jsonPath("$.message", is(ErrorMessages.USERDTO_NON_EXIST)))
+				.andExpect(jsonPath("$.errors[0]", is(ErrorMessages.USERDTO_ID_DOES_NOT_EXIST)));
+		
+	}
+	
+	
+	@Test
+	public void test010_updateUserOk() throws Exception {
+
+		UserDto userDto = new UserDto();
+		userDto.setUserDto_id(1L);
+		userDto.setName("Luis");  
+		userDto.setEmail("luis@notengoemail.com");
+		userDto.setArticles(0);
+		
+		// el usuario existe!
+		when(userService.existUser(userDto.getUserDto_id())).thenReturn(true);
+		// se hace un update del usuario!
+		when(userService.createUpdateUser(any(UserDto.class))).thenReturn(1L);
+		
+		this.userController.perform(put("/users/1").content(asJsonString(userDto))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.totalRecords", is(1)))
+				.andExpect(jsonPath("$.playload[0].userDto_id", is(1)))
+				.andExpect(jsonPath("$.playload[0].name", is("Luis")))
+				.andExpect(jsonPath("$.playload[0].email", is("luis@notengoemail.com")))
+				.andExpect(jsonPath("$.playload[0].articles", is(0)));		
+		
+	}
+	
+	
+	@Test
+	public void test011_updateBadlyFormattedFields() throws Exception {
+		
+		UserDto userDto = new UserDto();
+		userDto.setUserDto_id(1L); // en update de usuario debe distinto de null
+		userDto.setName("");  // campo vacío
+		userDto.setEmail(""); // campo vacío
+		userDto.setArticles(0);
+		
+		// tiene que lanzar una excepción antes...
+		when(userService.createUpdateUser(userDto)).thenReturn(1L);
+		
+		this.userController.perform(put("/users/1").content(asJsonString(userDto))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())))
+				.andExpect(jsonPath("$.message", is(ErrorMessages.USERDTO_FIELD_ERROR)))
+				.andExpect(jsonPath("$.errors[0]", is(ErrorMessages.USERDTO_FIELD_WRONG_FORMAT)));		
+		
+	}
+	
+	@Test
+	public void test012_removeUserOk() throws Exception {
+		
+		this.userController.perform(delete("/users/50")).andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+			.andExpect(jsonPath("$.totalRecords", is(0)));
+	}
+	
+
+	
+
 	
 	
 	
