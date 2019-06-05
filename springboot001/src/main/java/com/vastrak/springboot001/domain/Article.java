@@ -22,8 +22,7 @@ public class Article
   private Long article_id;
   private String title;
   private String body;
-  @ManyToOne(fetch=javax.persistence.FetchType.LAZY) // cambiado desde lazy
-  //@NotFound(action = NotFoundAction.IGNORE)
+  @ManyToOne(fetch=javax.persistence.FetchType.EAGER) 
   @JoinColumn(name="user_id")
   private User user;
   

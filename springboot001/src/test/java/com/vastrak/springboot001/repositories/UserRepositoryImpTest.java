@@ -72,14 +72,16 @@ public class UserRepositoryImpTest {
 		assertNotNull(foundUser);
 		assertTrue(foundUser.getUser_id().equals(userLuis.getUser_id()));
 
-		List<Article> listArticlesLuis = foundUser.getArticles();
-
+		List<Article> listArticlesLuis = articleRepository.findAllByUser(foundUser.getUser_id()); 
+		foundUser.setArticles(listArticlesLuis); 
+		
 		assertNotNull(listArticlesLuis);
 		assertTrue(listArticlesLuis.size() == 2);
 		assertTrue(listArticlesLuis.contains(articleLuis1));
 
 		logger.info("--> Usuario recuperado: " + foundUser);
-		logger.info("--> Artículo recuperado : " + listArticlesLuis.get(0));
+		logger.info("--> Artículo recuperado : " + foundUser.getArticles().get(0));
+		
 	}
 
 	@Test
@@ -116,7 +118,9 @@ public class UserRepositoryImpTest {
 	@Test
 	public void test004_removeUserArticle() {
 		User foundUser = (User) userRepository.findOne(userLuis.getUser_id());
-		List<Article> articles = foundUser.getArticles();
+		List<Article> articles = articleRepository.findAllByUser(foundUser.getUser_id());
+		foundUser.setArticles(articles);
+		
 
 		boolean removed = articles.remove(articleLuis1);
 		assertTrue(removed);
